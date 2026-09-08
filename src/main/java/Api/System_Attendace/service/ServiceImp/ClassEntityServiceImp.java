@@ -38,13 +38,14 @@ public class ClassEntityServiceImp implements ClassEntityService {
         return mapToResponse(classEntity);
     }
     @Override
-    public List<ClassEntityResponse> findAll() {
-        return classEntityRepository.findAll()
+    public List<ClassEntityResponse> findAll(Long teacherId) {
+
+        return classEntityRepository
+                .findByTeacherId(teacherId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
     }
-
     @Override
     public ClassEntityResponse update(ClassEntityRequest request, Long id) {
         ClassEntity classEntity = classEntityRepository.findById(id)

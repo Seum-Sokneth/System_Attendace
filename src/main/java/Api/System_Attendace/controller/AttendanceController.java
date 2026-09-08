@@ -5,12 +5,16 @@ import Api.System_Attendace.dto.Request.AttendanceRequest;
 import Api.System_Attendace.dto.Response.AttendanceReportResponse;
 import Api.System_Attendace.dto.Response.AttendanceResponse;
 
+import Api.System_Attendace.model.Teacher;
+import Api.System_Attendace.repository.TeacherRepository;
 import Api.System_Attendace.service.Service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -19,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AttendanceController {
     private final AttendanceService attendanceService;
+    private final TeacherRepository teacherRepository;
     @PostMapping
     public ResponseEntity<AttendanceResponse> create(@RequestBody AttendanceRequest request){
         return new ResponseEntity<>(
@@ -44,12 +49,44 @@ public class AttendanceController {
     @GetMapping("/report")
     public ResponseEntity<List<AttendanceReportResponse>> getAttendanceReport(
             @RequestParam Long classId,
-            @RequestParam String fromDate,
-            @RequestParam String toDate) {
+            @RequestParam LocalDate fromDate,
+            @RequestParam LocalDate toDate,
+            Authentication authentication
+    ) {
+
+        String email = authentication.getName();
+
+        Teacher teacher = teacherRepository
+                .findByUserEmail(email)
+                .orElseThrow();
 
         return ResponseEntity.ok(
                 attendanceService.getAttendanceReport(
                         classId,
+                        teacher.getId(),
+                        fromDate,
+                        toDate
+                )
+        );
+    }
+    @GetMapping("/history")
+    public ResponseEntity<List<AttendanceReportResponse>> history(
+            @RequestParam Long classId,
+            @RequestParam LocalDate fromDate,
+            @RequestParam LocalDate toDate,
+            Authentication authentication
+    ) {
+
+        String email = authentication.getName();
+
+        Teacher teacher = teacherRepository
+                .findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        return ResponseEntity.ok(
+                attendanceService.getAttendanceReport(
+                        classId,
+                        teacher.getId(),
                         fromDate,
                         toDate
                 )
@@ -64,11 +101,17 @@ public class AttendanceController {
 
     }
     @GetMapping
-    public ResponseEntity<List<AttendanceResponse>> getAll(){
-        return ResponseEntity.ok(
-                attendanceService.getAll()
-        );
+    public ResponseEntity<List<AttendanceResponse>> getAll(Authentication authentication) {
 
+        String email = authentication.getName();
+
+        Teacher teacher = teacherRepository
+                .findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+        return ResponseEntity.ok(
+                attendanceService.getAllByTeacher(teacher.getId())
+        );
     }
 
     @DeleteMapping("/{id}")

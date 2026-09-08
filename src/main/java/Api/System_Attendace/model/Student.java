@@ -1,5 +1,6 @@
 package Api.System_Attendace.model;
 
+import Api.System_Attendace.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,10 +26,11 @@ public class Student extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
-//    // Student belongs to one Class
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "class_id", nullable = true)
-//    private ClassEntity classEntity;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
+
+
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
@@ -39,9 +41,11 @@ public class Student extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String studentCode;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     private String email;
     private String phoneNumber;
     private LocalDate dateOfBirth;

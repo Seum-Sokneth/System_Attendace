@@ -17,29 +17,30 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
 
     void deleteByStudentId(Long id);
-
+    List<Attendance> findBySessionClassEntityTeacherId(Long teacherId);
 
     List<Attendance> findByStudentId(Long studentId);
     List<Attendance> findByStudentUserId(Long userId);
-
     @Query("""
-        SELECT new Api.System_Attendace.dto.Response.AttendanceReportResponse(
-            a.session.sessionDate,
-            SUM(CASE WHEN a.status = 'PRESENT' THEN 1 ELSE 0 END),
-            SUM(CASE WHEN a.status = 'ABSENT' THEN 1 ELSE 0 END),
-            SUM(CASE WHEN a.status = 'LATE' THEN 1 ELSE 0 END),
-            SUM(CASE WHEN a.status = 'EXCUSE' THEN 1 ELSE 0 END),
-            COUNT(a.id),
-            (SUM(CASE WHEN a.status = 'PRESENT' THEN 1 ELSE 0 END) * 100.0 / COUNT(a.id))
-        )
-        FROM Attendance a
-        WHERE a.session.classEntity.id = :classId
-        AND a.session.sessionDate BETWEEN :fromDate AND :toDate
-        GROUP BY a.session.sessionDate
-        ORDER BY a.session.sessionDate
-    """)
+SELECT new Api.System_Attendace.dto.Response.AttendanceReportResponse(
+    a.session.sessionDate,
+    SUM(CASE WHEN a.status='PRESENT' THEN 1 ELSE 0 END),
+    SUM(CASE WHEN a.status='ABSENT' THEN 1 ELSE 0 END),
+    SUM(CASE WHEN a.status='LATE' THEN 1 ELSE 0 END),
+    SUM(CASE WHEN a.status='EXCUSE' THEN 1 ELSE 0 END),
+    COUNT(a.id),
+    (SUM(CASE WHEN a.status='PRESENT' THEN 1 ELSE 0 END)*100.0/COUNT(a.id))
+)
+FROM Attendance a
+WHERE a.session.classEntity.id=:classId
+AND a.session.classEntity.teacher.id=:teacherId
+AND a.session.sessionDate BETWEEN :fromDate AND :toDate
+GROUP BY a.session.sessionDate
+ORDER BY a.session.sessionDate
+""")
     List<AttendanceReportResponse> getAttendanceReport(
             @Param("classId") Long classId,
+            @Param("teacherId") Long teacherId,
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate
     );

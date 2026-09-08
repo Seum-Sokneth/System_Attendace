@@ -2,11 +2,14 @@ package Api.System_Attendace.controller;
 
 import Api.System_Attendace.dto.Request.ClassEntityRequest;
 import Api.System_Attendace.dto.Response.ClassEntityResponse;
+import Api.System_Attendace.model.Teacher;
+import Api.System_Attendace.repository.TeacherRepository;
 import Api.System_Attendace.service.Service.ClassEntityService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 public class ClassEntityController {
 
     private final ClassEntityService classEntityService;
+    private final TeacherRepository teacherRepository;
 
     @PostMapping
     public ResponseEntity<ClassEntityResponse> create(@Valid @RequestBody ClassEntityRequest request) {
@@ -28,8 +32,21 @@ public class ClassEntityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClassEntityResponse>> findAll() {
-        return ResponseEntity.ok(classEntityService.findAll());
+    public ResponseEntity<List<ClassEntityResponse>> findAll(
+            Authentication authentication
+    ){
+
+        String email = authentication.getName();
+
+        Teacher teacher = teacherRepository
+                .findByUserEmail(email)
+                .orElseThrow();
+
+        return ResponseEntity.ok(
+                classEntityService.findAll(
+                        teacher.getId()
+                )
+        );
     }
 
     @GetMapping("/{id}")

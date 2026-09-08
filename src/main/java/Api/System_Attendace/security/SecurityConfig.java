@@ -12,44 +12,50 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
         http
                 .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(sess ->
-                        sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        sess.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
                 )
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Login/Register
+                        // Login / Register
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Allow student API
-                        .requestMatchers("/api/students/**").permitAll()
+                        // Students
+                        .requestMatchers("/api/students/**")
+                        .authenticated()
 
-                        // Allow class API
-                        .requestMatchers("/api/class/**").permitAll()
+                        // Classes
+                        .requestMatchers("/api/class/**")
+                        .authenticated()
 
-                        // Allow teacher API
-                        .requestMatchers("/api/teacher/**").permitAll()
+                        // Teachers
+                        .requestMatchers("/api/teacher/**")
+                        .authenticated()
 
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
-                        .permitAll()
+                        // Swagger
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
 
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(
@@ -57,10 +63,8 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 );
 
-
         return http.build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

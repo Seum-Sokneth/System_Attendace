@@ -33,6 +33,9 @@ public class StudentDashboardController {
                 .name(student.getName())
                 .email(student.getEmail())
                 .studentCode(student.getStudentCode())
+                .phoneNumber(student.getPhoneNumber())
+                .createdAt(student.getCreatedAt())
+                .dateOfBirth(student.getDateOfBirth())
                 .build();
 
     }

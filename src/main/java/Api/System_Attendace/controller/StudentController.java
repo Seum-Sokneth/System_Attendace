@@ -3,6 +3,8 @@ package Api.System_Attendace.controller;
 
 import Api.System_Attendace.dto.Request.StudentRequest;
 import Api.System_Attendace.dto.Response.StudentResponse;
+import Api.System_Attendace.model.Teacher;
+import Api.System_Attendace.repository.TeacherRepository;
 import Api.System_Attendace.service.Service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,7 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
-
+    private final TeacherRepository teacherRepository;
 
     @PostMapping
     public ResponseEntity<StudentResponse> create(
@@ -29,10 +31,23 @@ public class StudentController {
 
 
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> findAll(){
+    public ResponseEntity<List<StudentResponse>> findAll(
+            Authentication authentication
+    ){
+
+        String email = authentication.getName();
+
+
+        Teacher teacher =
+                teacherRepository
+                        .findByUserEmail(email)
+                        .orElseThrow();
+
 
         return ResponseEntity.ok(
-                studentService.findAll()
+                studentService.findAll(
+                        teacher.getId()
+                )
         );
     }
     @GetMapping("/profile")
@@ -58,16 +73,14 @@ public class StudentController {
     }
 
 
-    // Add this API
     @GetMapping("/class/{classId}")
     public ResponseEntity<List<StudentResponse>> findStudentsByClass(
             @PathVariable Long classId
-    ){
+    ) {
         return ResponseEntity.ok(
                 studentService.findStudentsByClass(classId)
         );
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<StudentResponse> update(

@@ -13,7 +13,7 @@ public interface StudentService {
 
     StudentResponse findById(Long id);
 
-    List<StudentResponse> findAll();
+    List<StudentResponse> findAll(Long teacherId);
 
     void delete(Long id);
     StudentResponse getProfileByEmail(String email);

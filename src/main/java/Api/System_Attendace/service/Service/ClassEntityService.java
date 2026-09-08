@@ -8,7 +8,7 @@ import java.util.List;
 public interface ClassEntityService {
     ClassEntityResponse create(ClassEntityRequest classEntityRequest);
     ClassEntityResponse findById(Long id);
-    List<ClassEntityResponse> findAll();
+    List<ClassEntityResponse> findAll(Long teacherId);
     ClassEntityResponse update(ClassEntityRequest classEntityRequest,Long id);
     void delete(Long id);
 }

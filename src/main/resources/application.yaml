@@ -6,7 +6,7 @@ spring:
     name: Attendace-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/System
+    url: jdbc:postgresql://localhost:5432/Web_Api
     username: postgres
     password: 09052004
     driver-class-name: org.postgresql.Driver

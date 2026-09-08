@@ -16,33 +16,53 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter
         extends OncePerRequestFilter {
+
     private final JwtUtil jwtUtil;
+
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
-    )
-            throws ServletException, IOException {
+    ) throws ServletException, IOException {
+
         String authHeader =
                 request.getHeader("Authorization");
-        if(authHeader == null ||
-                !authHeader.startsWith("Bearer ")){
-            filterChain.doFilter(request,response);
+
+        System.out.println("========== JWT FILTER ==========");
+        System.out.println("Request: " + request.getRequestURI());
+        System.out.println("Authorization: " + authHeader);
+
+        if (authHeader == null ||
+                !authHeader.startsWith("Bearer ")) {
+
+            System.out.println("❌ No Bearer token");
+
+            filterChain.doFilter(request, response);
             return;
         }
-        String token =
-                authHeader.substring(7);
+
+        String token = authHeader.substring(7);
+
         try {
+
             Claims claims =
                     jwtUtil.extractAllClaims(token);
+
             String email =
                     claims.getSubject();
+
             String role =
                     claims.get("role", String.class);
+
+            System.out.println("✅ JWT valid");
+            System.out.println("Email: " + email);
+            System.out.println("Role: " + role);
+
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             email,
@@ -53,15 +73,27 @@ public class JwtAuthenticationFilter
                                     )
                             )
                     );
+
             SecurityContextHolder
                     .getContext()
                     .setAuthentication(authentication);
-        } catch(Exception e){
+
             System.out.println(
-                    "JWT ERROR : " + e.getMessage()
+                    "Authentication set: "
+                            + SecurityContextHolder
+                            .getContext()
+                            .getAuthentication()
             );
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "❌ JWT ERROR: " + e.getMessage()
+            );
+
             SecurityContextHolder.clearContext();
         }
-        filterChain.doFilter(request,response);
+
+        filterChain.doFilter(request, response);
     }
 }

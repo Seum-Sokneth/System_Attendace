@@ -4,6 +4,7 @@ import Api.System_Attendace.dto.Request.AttendanceRequest;
 import Api.System_Attendace.dto.Response.AttendanceReportResponse;
 import Api.System_Attendace.dto.Response.AttendanceResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AttendanceService {
@@ -13,12 +14,13 @@ public interface AttendanceService {
 
     AttendanceResponse getById(Long id);
 
-    List<AttendanceResponse> getAll();
+    List<AttendanceResponse> getAllByTeacher(Long teacherId);
     List<AttendanceResponse> getByStudent(Long studentId);
     List<AttendanceReportResponse> getAttendanceReport(
             Long classId,
-            String fromDate,
-            String toDate
+            Long teacherId,
+            LocalDate fromDate,
+            LocalDate toDate
     );
     void delete(Long id);
 }

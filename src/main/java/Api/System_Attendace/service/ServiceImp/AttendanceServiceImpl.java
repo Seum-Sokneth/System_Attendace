@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -78,14 +77,14 @@ public class AttendanceServiceImpl implements Api.System_Attendace.service.Servi
                         new ExceptionNotFound("Attendance not found"));
         return mapToResponse(attendance);
     }
-
     @Override
-    public List<AttendanceResponse> getAll() {
-        return attendanceRepository.findAll()
+    public List<AttendanceResponse> getAllByTeacher(Long teacherId) {
+
+        return attendanceRepository
+                .findBySessionClassEntityTeacherId(teacherId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
-
     }
 
     @Override
@@ -101,18 +100,19 @@ public class AttendanceServiceImpl implements Api.System_Attendace.service.Servi
     @Override
     public List<AttendanceReportResponse> getAttendanceReport(
             Long classId,
-            String fromDate,
-            String toDate) {
-
-        LocalDate start = LocalDate.parse(fromDate);
-        LocalDate end = LocalDate.parse(toDate);
+            Long teacherId,
+            LocalDate fromDate,
+            LocalDate toDate
+    ) {
 
         return attendanceRepository.getAttendanceReport(
                 classId,
-                start,
-                end
+                teacherId,
+                fromDate,
+                toDate
         );
     }
+
 
     @Override
     public void delete(Long id) {

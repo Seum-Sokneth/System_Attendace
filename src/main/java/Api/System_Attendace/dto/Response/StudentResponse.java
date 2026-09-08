@@ -1,5 +1,6 @@
 package Api.System_Attendace.dto.Response;
 
+import Api.System_Attendace.enums.Gender;
 import jdk.jshell.Snippet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,7 @@ public class StudentResponse {
     private Long userId;
 
     private String name;
-
+    private Gender gender;
     private String studentCode;
 
     private String email;

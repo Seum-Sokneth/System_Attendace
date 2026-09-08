@@ -55,13 +55,10 @@ public class StudentServiceImp implements StudentService {
         Student student = new Student();
 
         student.setName(request.getName());
-
         student.setStudentCode(request.getStudentCode());
-
         student.setEmail(request.getEmail());
-        user.setPassword(
-                passwordEncoder.encode(request.getPassword())
-        );
+        student.setGender(request.getGender());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         student.setPhoneNumber(request.getPhoneNumber());
 
         student.setDateOfBirth(request.getDateOfBirth());
@@ -90,8 +87,12 @@ public class StudentServiceImp implements StudentService {
                 .id(student.getId())
                 .name(student.getName())
                 .email(student.getEmail())
+                .gender(student.getGender())
                 .studentCode(student.getStudentCode())
                 .phoneNumber(student.getPhoneNumber())
+                .dateOfBirth(student.getDateOfBirth())
+                .createdAt(student.getCreatedAt())
+                .updatedAt(student.getUpdatedAt())
                 .build();
     }
 
@@ -124,13 +125,12 @@ public class StudentServiceImp implements StudentService {
     }
 
     @Override
-    public List<StudentResponse> findAll() {
+    public List<StudentResponse> findAll(Long teacherId) {
 
-        return studentRepository.findAll()
+        return studentRepository.findStudentsByTeacherId(teacherId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
-
     }
 
     @Override
@@ -145,6 +145,7 @@ public class StudentServiceImp implements StudentService {
         student.setName(request.getName());
         student.setStudentCode(request.getStudentCode());
         student.setEmail(request.getEmail());
+        student.setGender(request.getGender());
         student.setPhoneNumber(request.getPhoneNumber());
         student.setDateOfBirth(request.getDateOfBirth());
 
@@ -197,6 +198,7 @@ public class StudentServiceImp implements StudentService {
         response.setName(student.getName());
         response.setStudentCode(student.getStudentCode());
         response.setEmail(student.getEmail());
+        response.setGender(student.getGender());
         response.setPhoneNumber(student.getPhoneNumber());
         response.setDateOfBirth(student.getDateOfBirth());
 

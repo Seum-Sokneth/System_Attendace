@@ -94,6 +94,7 @@ public class EnrollServiceImp implements EnrollService {
         response.setClassId(enrollment.getClassEntity().getId());
         response.setClassTitle(enrollment.getClassEntity().getClassTitle());
         response.setStudentId(enrollment.getStudent().getId());
+        response.setGender(enrollment.getStudent().getGender());
         response.setStudentName(enrollment.getStudent().getName());
         response.setCreatedAt(enrollment.getCreatedAt());
         response.setUpdatedAt(enrollment.getUpdatedAt());

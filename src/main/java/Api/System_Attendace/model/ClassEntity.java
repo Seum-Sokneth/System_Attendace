@@ -25,7 +25,7 @@ public class ClassEntity extends BaseEntity {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @Column(name = "class_code", nullable = false, unique = true)
+    @Column(name = "class_code", nullable = false )
     private String classCode;
 
     @Column(name = "class_title", nullable = false)
@@ -40,4 +40,11 @@ public class ClassEntity extends BaseEntity {
     @Column(length = 500)
     private String description;
 
+    @OneToMany(
+            mappedBy = "classEntity",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<AttendanceSession> attendanceSessions
+            = new ArrayList<>();
 }

@@ -8,6 +8,7 @@ import Api.System_Attendace.dto.Response.AttendanceResponse;
 import Api.System_Attendace.model.Teacher;
 import Api.System_Attendace.repository.TeacherRepository;
 import Api.System_Attendace.service.Service.AttendanceService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class AttendanceController {
                 HttpStatus.CREATED
         );
     }
+    @Operation(summary = "Hello " , description = "Find student id")
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<AttendanceResponse>> getByStudent(
             @PathVariable Long studentId) {

@@ -6,9 +6,9 @@ spring:
     name: Attendace-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/Web_Api
-    username: postgres
-    password: 09052004
+    url: jdbc:postgresql://dpg-dakbjuh5efls73de6of0-a/attendance_db_jwhx
+    username: attendance_db_jwhx_user
+    password: fFGhvGKk7aPiRaKx1TcXqr9ekCZpT1t2
     driver-class-name: org.postgresql.Driver
 
   jpa:

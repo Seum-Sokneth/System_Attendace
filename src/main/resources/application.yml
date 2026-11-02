@@ -1,0 +1,9 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: Attendance-service
+
+  profiles:
+    default: local

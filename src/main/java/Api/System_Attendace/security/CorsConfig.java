@@ -20,7 +20,7 @@ public class CorsConfig {
                 "http://localhost:5173",
                 "http://localhost:5174",
                 "http://localhost:5175",
-                "https://minet2943-byte.github.io"
+                "https://seum-sokneth.github.io/"
         ));
 
         configuration.setAllowedMethods(List.of(
